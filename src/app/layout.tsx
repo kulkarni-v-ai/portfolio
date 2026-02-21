@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import SmoothScroll from '@/components/SmoothScroll'
+import SceneWrapper from '@/components/SceneWrapper'
 
 export const metadata: Metadata = {
   title: 'AI Superintelligence Anti-Gravity Lab',
@@ -21,7 +23,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>{children}</SmoothScroll>
+        <SceneWrapper />
+      </body>
     </html>
   )
 }
