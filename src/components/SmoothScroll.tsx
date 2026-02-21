@@ -36,7 +36,16 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
         gsap.ticker.lagSmoothing(0);
 
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = (e.clientX / window.innerWidth) * 2 - 1;
+            const y = -(e.clientY / window.innerHeight) * 2 + 1;
+            useStore.getState().setCursorPosition(x, y);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+
         return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
             gsap.ticker.remove((time) => lenis.raf(time * 1000));
             lenis.destroy();
         };

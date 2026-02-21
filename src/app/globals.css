@@ -1,125 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700&display=swap');
 
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
-  /* Deep-space palette */
-  --color-void: #000000;
-  --color-abyss: #020408;
-  --color-nebula: #0a0f1e;
-  --color-ion: #0d1b2a;
-  --color-plasma: #1a2942;
-  --color-accent-cold: #4fc3f7;
-  /* cool cyan — primary accent */
-  --color-accent-warm: #81d4fa;
-  /* light blue — secondary */
-  --color-accent-glow: #00b4d8;
-  /* electric blue — glow */
-  --color-grid: rgba(79, 195, 247, 0.06);
-  --color-text-primary: #e8f4f8;
-  --color-text-secondary: #7fb3c8;
-  --color-text-dim: #3d6478;
-
-  /* Typography */
-  --font-sans: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'Space Mono', 'Courier New', monospace;
-
-  /* Motion */
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* ─── Reset & Base ──────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  background-color: var(--color-void);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* Smooth scroll handled by Lenis — disable native */
-  scroll-behavior: auto;
+  --color-void: #050505;
+  --color-accent: #00b4ff;
+  --font-funky: 'Orbitron', 'Space Grotesk', sans-serif;
+  --font-base: 'Space Grotesk', sans-serif;
 }
 
 body {
   background-color: var(--color-void);
-  overflow-x: hidden;
-  min-height: 100dvh;
+  color: #ffffff;
+  font-family: var(--font-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Selection ─────────────────────────────────────────────── */
+@layer components {
+  .text-display {
+    font-family: var(--font-funky);
+    @apply text-[10vw] leading-[0.85] tracking-tighter uppercase font-black;
+    text-shadow: 0 0 30px rgba(0, 180, 255, 0.4);
+  }
+
+  .text-heading {
+    font-family: var(--font-funky);
+    @apply text-4xl md:text-6xl tracking-tight uppercase font-bold;
+  }
+
+  .text-label {
+    font-family: var(--font-funky);
+    @apply text-[10px] tracking-[0.4em] uppercase font-medium text-blue-400 opacity-80;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-black/60 backdrop-blur-3xl;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  }
+
+  .glow-cold {
+    text-shadow: 0 0 20px rgba(0, 180, 255, 0.6);
+  }
+}
+
+/* ─── Selection ──────────────── */
 ::selection {
-  background-color: var(--color-accent-cold);
-  color: var(--color-void);
+  background-color: var(--color-accent);
+  color: #000;
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────────── */
+/* ─── Scrollbar ──────────────── */
 ::-webkit-scrollbar {
   width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-void);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-plasma);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-cool);
-}
-
-/* ─── Typography Scale ──────────────────────────────────────── */
-.text-display {
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-.text-heading {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.text-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-}
-
-.text-mono {
-  font-family: var(--font-mono);
-}
-
-/* ─── Utility: Glow ─────────────────────────────────────────── */
-.glow-cold {
-  text-shadow: 0 0 20px rgba(79, 195, 247, 0.4),
-    0 0 60px rgba(79, 195, 247, 0.15);
-}
-
-.glow-box {
-  box-shadow: 0 0 0 1px rgba(79, 195, 247, 0.15),
-    0 0 40px rgba(79, 195, 247, 0.05);
-}
-
-/* ─── Lenis smooth scroll class ────────────────────────────── */
+/* ─── Lenis ──────────────────── */
 html.lenis,
 html.lenis body {
   height: auto;
