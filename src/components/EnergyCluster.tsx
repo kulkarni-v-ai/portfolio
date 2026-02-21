@@ -58,56 +58,49 @@ export default function EnergyCluster({ data, index, total }: EnergyClusterProps
             position={position}
             orbitRadius={Math.sqrt(position[0] ** 2 + position[2] ** 2)}
             orbitSpeed={orbitSpeed}
-        >
-            <div
-                onClick={() => alert(`Engaging Energy Phase: ${data.title}\nRole: ${data.role}`)}
-                className={`relative p-3 rounded-lg border border-white/10 bg-black/80 backdrop-blur-2xl overflow-hidden group transition-all duration-300 hover:scale-105 cursor-pointer active:scale-95 ${style.glow}`}
-            >
-                {/* Particle Emitter Simulation (Drei Sparkles inside the 3D space) */}
-                <div className="absolute inset-0 pointer-events-none opacity-20">
-                    {/* Note: Sparkles is a R3F component, it must be sibling or child of mesh.
-               Since this is inside <Html>, we can't put Sparkles here.
-               We'll place it as a sibling to the Html inside FloatingModule if we want it in 3D,
-               or use CSS animations here. Let's stick to CSS/SVG for the "inner" glow here. */}
-                </div>
+            ui={
+                <div
+                    onClick={() => alert(`Engaging Energy Phase: ${data.title}\nRole: ${data.role}`)}
+                    className={`relative p-3 rounded-lg border border-white/10 bg-black/80 backdrop-blur-2xl overflow-hidden group transition-all duration-300 hover:scale-105 cursor-pointer active:scale-95 ${style.glow}`}
+                >
+                    <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                            <div
+                                className="w-1.5 h-1.5 rounded-full animate-pulse"
+                                style={{ backgroundColor: style.color }}
+                            />
+                            <span
+                                style={{ fontFamily: 'var(--font-funky)' }}
+                                className="text-[9px] opacity-60 uppercase tracking-widest text-white/80"
+                            >
+                                {data.category}
+                            </span>
+                        </div>
 
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                        <div
-                            className="w-1.5 h-1.5 rounded-full animate-pulse"
-                            style={{ backgroundColor: style.color }}
-                        />
-                        <span
+                        <h4
                             style={{ fontFamily: 'var(--font-funky)' }}
-                            className="text-[9px] opacity-60 uppercase tracking-widest text-white/80"
+                            className="text-sm font-bold text-white leading-tight uppercase tracking-tight"
                         >
-                            {data.category}
-                        </span>
+                            {data.title}
+                        </h4>
+
+                        <p
+                            style={{ fontFamily: 'var(--font-base)' }}
+                            className="text-[11px] text-white/40 font-medium"
+                        >
+                            {data.role}
+                        </p>
+
+                        <p
+                            style={{ fontFamily: 'var(--font-base)' }}
+                            className="text-[10px] text-white/20 hidden group-hover:block mt-2 italic leading-tight"
+                        >
+                            {data.description}
+                        </p>
                     </div>
-
-                    <h4
-                        style={{ fontFamily: 'var(--font-funky)' }}
-                        className="text-sm font-bold text-white leading-tight uppercase tracking-tight"
-                    >
-                        {data.title}
-                    </h4>
-
-                    <p
-                        style={{ fontFamily: 'var(--font-base)' }}
-                        className="text-[11px] text-white/40 font-medium"
-                    >
-                        {data.role}
-                    </p>
-
-                    <p
-                        style={{ fontFamily: 'var(--font-base)' }}
-                        className="text-[10px] text-white/20 hidden group-hover:block mt-2 italic leading-tight"
-                    >
-                        {data.description}
-                    </p>
                 </div>
-            </div>
-
+            }
+        >
             {/* 3D Particle Trail - This sits in the actual WebGL space */}
             <Sparkles
                 count={20}

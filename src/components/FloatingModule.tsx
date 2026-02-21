@@ -8,7 +8,8 @@ import { useStore } from '@/store/useStore';
 
 interface FloatingModuleProps {
     position: [number, number, number];
-    children: React.ReactNode;
+    children?: React.ReactNode; // WebGL components
+    ui?: React.ReactNode;       // HTML UI components
     orbitRadius?: number;
     orbitSpeed?: number;
 }
@@ -16,6 +17,7 @@ interface FloatingModuleProps {
 export default function FloatingModule({
     position,
     children,
+    ui,
     orbitRadius = 5,
     orbitSpeed = 0.2,
 }: FloatingModuleProps) {
@@ -94,18 +96,23 @@ export default function FloatingModule({
                 <boxGeometry args={[3.2, 2.2, 0.5]} />
             </mesh>
 
+            {/* 3D WebGL Children */}
+            {children}
+
             {/* Futuristic Glass UI Panel */}
-            <Html
-                transform
-                distanceFactor={10}
-                position={[0, 0, 0]}
-                occlude="blending"
-                className="pointer-events-auto"
-            >
-                <div className="w-52 p-3 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl shadow-[0_0_30px_rgba(0,180,255,0.05)] transition-all duration-500 hover:border-blue-500/40 hover:bg-blue-900/10 hover:shadow-[0_0_40px_rgba(0,150,255,0.2)] text-white cursor-pointer select-none">
-                    {children}
-                </div>
-            </Html>
+            {ui && (
+                <Html
+                    transform
+                    distanceFactor={10}
+                    position={[0, 0, 0]}
+                    occlude="blending"
+                    className="pointer-events-auto"
+                >
+                    <div className="w-52 p-3 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl shadow-[0_0_30px_rgba(0,180,255,0.05)] transition-all duration-500 hover:border-blue-500/40 hover:bg-blue-900/10 hover:shadow-[0_0_40px_rgba(0,150,255,0.2)] text-white cursor-pointer select-none">
+                        {ui}
+                    </div>
+                </Html>
+            )}
         </RigidBody>
     );
 }

@@ -72,45 +72,50 @@ export default function AcademicModule({ course, index, totalCourses }: Academic
             position={position}
             orbitRadius={Math.abs(position[0]) + 2}
             orbitSpeed={orbitSpeed}
-        >
-            <div
-                onClick={() => alert(`Engaging Module: ${course.title}\nID: ${course.id}`)}
-                className="flex flex-col gap-2 group cursor-pointer active:scale-95 transition-transform"
-            >
-                <div className="flex justify-between items-start mb-1">
-                    <span
-                        className={`text-[9px] uppercase tracking-widest px-2 py-1 rounded bg-black/60 border border-white/10 ${style.text}`}
-                    >
-                        {course.category}
-                    </span>
-                    <span className="text-[9px] font-mono text-white/20 tracking-[0.2em] uppercase">{course.id}</span>
-                </div>
-
-                <h3
-                    className="text-lg font-bold text-white leading-tight group-hover:text-blue-400 transition-colors uppercase tracking-tight"
+            ui={
+                <div
+                    onClick={() => alert(`Engaging Module: ${course.title}\nID: ${course.id}`)}
+                    className="flex flex-col gap-2 group cursor-pointer active:scale-95 transition-transform"
                 >
-                    {course.title}
-                </h3>
+                    <div className="flex justify-between items-start mb-1">
+                        <span
+                            style={{ fontFamily: 'var(--font-funky)' }}
+                            className={`text-[9px] uppercase tracking-widest px-2 py-1 rounded bg-black/60 border border-white/10 ${style.text}`}
+                        >
+                            {course.category}
+                        </span>
+                        <span className="text-[9px] font-mono text-white/20 tracking-[0.2em] uppercase">{course.id}</span>
+                    </div>
 
-                <p
-                    className="text-[13px] text-white/50 leading-relaxed line-clamp-2 mt-1 shadow-sm"
-                >
-                    {course.description}
-                </p>
-
-                {/* Hover-reveal Skills Section */}
-                <div className="mt-3 pt-3 border-t border-white/5 max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-out group-hover:max-h-24 group-hover:opacity-100">
-                    <div
-                        className="flex flex-wrap gap-2"
+                    <h3
+                        style={{ fontFamily: 'var(--font-funky)' }}
+                        className="text-lg font-bold text-white leading-tight group-hover:text-blue-400 transition-colors uppercase tracking-tight"
                     >
-                        {course.skills.map((skill) => (
-                            <span key={skill} className="text-[9px] bg-white/5 px-2 py-1 rounded-sm text-white/40 border border-white/5">
-                                {skill}
-                            </span>
-                        ))}
+                        {course.title}
+                    </h3>
+
+                    <p
+                        style={{ fontFamily: 'var(--font-base)' }}
+                        className="text-[13px] text-white/50 leading-relaxed line-clamp-2 mt-1 shadow-sm"
+                    >
+                        {course.description}
+                    </p>
+
+                    {/* Hover-reveal Skills Section */}
+                    <div className="mt-3 pt-3 border-t border-white/5 max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-out group-hover:max-h-24 group-hover:opacity-100">
+                        <div
+                            style={{ fontFamily: 'var(--font-base)' }}
+                            className="flex flex-wrap gap-2"
+                        >
+                            {course.skills.map((skill) => (
+                                <span key={skill} className="text-[9px] bg-white/5 px-2 py-1 rounded-sm text-white/40 border border-white/5">
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </FloatingModule >
+            }
+        />
     );
 }
