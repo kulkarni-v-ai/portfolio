@@ -190,7 +190,7 @@ export default function AICore() {
     });
 
     return (
-        <mesh ref={meshRef} position={[0, 0, 0]}>
+        <mesh ref={meshRef} position={[0, 0, 0]} renderOrder={100}>
             {/* Reduced size for better scene composition */}
             <sphereGeometry args={[1.2, 128, 128]} />
             <shaderMaterial
@@ -200,6 +200,7 @@ export default function AICore() {
                 uniforms={uniforms}
                 wireframe={false}
                 transparent={true}
+                depthTest={false}
             />
         </mesh>
     );
