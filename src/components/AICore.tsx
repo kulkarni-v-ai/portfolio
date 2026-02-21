@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useStore } from '@/store/useStore';
@@ -126,6 +126,14 @@ void main() {
 export default function AICore() {
     const meshRef = useRef<THREE.Mesh>(null);
     const materialRef = useRef<THREE.ShaderMaterial>(null);
+    const setCoreRef = useStore(state => state.setCoreRef);
+
+    // Register this mesh as the "Core" in the global store for occlusion
+    useEffect(() => {
+        if (meshRef.current) {
+            setCoreRef(meshRef.current);
+        }
+    }, [setCoreRef]);
 
     // Setup Shader Uniforms once
     const uniforms = useMemo(
@@ -190,7 +198,11 @@ export default function AICore() {
     });
 
     return (
-        <mesh ref={meshRef} position={[0, 0, 0]} renderOrder={100}>
+        <mesh
+            ref={meshRef}
+            position={[0, 0, 0]}
+            renderOrder={999} // Max priority
+        >
             {/* Reduced size for better scene composition */}
             <sphereGeometry args={[1.2, 128, 128]} />
             <shaderMaterial
@@ -200,7 +212,8 @@ export default function AICore() {
                 uniforms={uniforms}
                 wireframe={false}
                 transparent={true}
-                depthTest={false}
+                depthTest={false}  // Always draw over other 3D objects
+                depthWrite={true}  // Still write to depth for HTML occlusion (drei)
             />
         </mesh>
     );
