@@ -16,23 +16,29 @@ import { coCurricularData } from '@/data/cocurricular';
 function SceneController() {
     useFrame((state) => {
         const { scrollProgress } = useStore.getState();
-
-        // Use type assertion to access PerspectiveCamera specific properties
         const camera = state.camera as THREE.PerspectiveCamera;
+        const aspect = state.size.width / state.size.height;
+        const isMobile = aspect < 1;
 
         // 1. Zoom Camera (FOV) based on scroll
-        const targetFOV = 45 - scrollProgress * 15;
+        // On mobile, we start with a wider FOV to fit the orbits
+        const baseFOV = isMobile ? 60 : 45;
+        const targetFOV = baseFOV - scrollProgress * 15;
+
         if (camera.isPerspectiveCamera) {
             camera.fov = THREE.MathUtils.lerp(camera.fov, targetFOV, 0.05);
             camera.updateProjectionMatrix();
         }
 
-        // 2. Lateral Camera Shift (Slide to side for text sections)
+        // 2. Lateral Camera Shift
+        // Disabled on mobile to keep Core centered behind responsive text
         let targetX = 0;
-        if (scrollProgress > 0.1 && scrollProgress < 0.5) {
-            targetX = -3; // Camera moves left -> Core appears right
-        } else if (scrollProgress >= 0.5 && scrollProgress < 0.9) {
-            targetX = 3; // Camera moves right -> Core appears left
+        if (!isMobile) {
+            if (scrollProgress > 0.1 && scrollProgress < 0.5) {
+                targetX = -3;
+            } else if (scrollProgress >= 0.5 && scrollProgress < 0.9) {
+                targetX = 3;
+            }
         }
 
         camera.position.x = THREE.MathUtils.lerp(camera.position.x, targetX, 0.03);

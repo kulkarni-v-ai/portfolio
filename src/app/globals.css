@@ -20,13 +20,17 @@ body {
 @layer components {
   .text-display {
     font-family: var(--font-funky);
-    @apply text-[10vw] leading-[0.85] tracking-tighter uppercase font-black;
-    text-shadow: 0 0 30px rgba(0, 180, 255, 0.4);
+    font-size: clamp(2.5rem, 8vw, 6.5rem);
+    line-height: 0.9;
+    @apply tracking-tighter uppercase font-black;
+    text-shadow: 0 0 40px rgba(0, 180, 255, 0.3);
   }
 
   .text-heading {
     font-family: var(--font-funky);
-    @apply text-4xl md:text-6xl tracking-tight uppercase font-bold;
+    font-size: clamp(1.75rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    @apply tracking-tight uppercase font-bold;
   }
 
   .text-label {
