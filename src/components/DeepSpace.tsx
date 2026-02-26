@@ -167,7 +167,7 @@ export default function DeepSpace() {
     });
 
     return (
-        <points ref={pointsRef}>
+        <points ref={pointsRef} renderOrder={-2}>
             <bufferGeometry>
                 <bufferAttribute
                     attach="attributes-position"
@@ -198,6 +198,7 @@ export default function DeepSpace() {
                 uniforms={uniforms}
                 transparent={true}
                 depthWrite={false}
+                depthTest={false}
                 blending={THREE.AdditiveBlending}
                 vertexColors={true}
             />

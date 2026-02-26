@@ -1,5 +1,7 @@
 'use client'
 
+import CardCarousel from '@/components/CardCarousel'
+
 export default function HomePage() {
   return (
     <main className="relative min-h-[500dvh] bg-black">
@@ -8,14 +10,14 @@ export default function HomePage() {
         {/* Global Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(79,195,247,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(79,195,247,0.02)_1px,transparent_1px)] bg-[size:50px_50px] md:bg-[size:100px_100px]" />
 
-        {/* Corner HUD markers - Hidden on small mobile to keep it clean */}
+        {/* Corner HUD markers */}
         <div className="hidden sm:block absolute top-6 left-6 md:top-10 md:left-10 text-label opacity-30">
           Core Status: Nominal<br />
           Stability: 99.8%
         </div>
         <div className="hidden sm:block absolute bottom-6 right-6 md:bottom-10 md:right-10 text-label opacity-30 text-right">
-          Antigravity Engine v2.4<br />
-          ©2026 AI-Lab
+          VANYX Engine v2.4<br />
+          ©2026 VANYX
         </div>
       </div>
 
@@ -24,8 +26,7 @@ export default function HomePage() {
         <div className="max-w-5xl pointer-events-auto flex flex-col items-center">
           <p className="text-label mb-4 md:mb-6 tracking-[0.5em]">Intelligence Core v0.1</p>
           <h1 className="text-display glow-cold mb-6 md:mb-10 transition-all duration-1000 tracking-[-0.05em] leading-[0.85]">
-            AI Superintelligence<br />
-            Anti-Gravity <span className="text-blue-500">Lab</span>
+            VAN<span className="text-blue-500">YX</span>
           </h1>
           <p className="text-sm md:text-lg text-blue-200/30 max-w-xl mx-auto leading-relaxed font-light px-4">
             A high-fidelity research environment exploring the intersection of distributed systems, neural architectures, and smooth analytical motion.
@@ -56,6 +57,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Section 2.5: Card Carousel ── */}
+      <CardCarousel />
+
       {/* ── Section 3: Tech Stack ── */}
       <section className="relative min-h-[100dvh] flex flex-col items-end justify-center px-8 md:px-24 z-20 pointer-events-none bg-gradient-to-l from-black/80 via-black/40 to-transparent">
         <div className="max-w-sm md:max-w-md text-right sticky top-1/3 pointer-events-auto">
@@ -65,7 +69,7 @@ export default function HomePage() {
             style={{ fontFamily: 'var(--font-base)' }}
             className="text-xs md:text-sm text-blue-100/30 leading-relaxed font-light mb-12"
           >
-            The lab infrastructure is synthesized using direct neural-link protocols,
+            The VANYX infrastructure is synthesized using direct neural-link protocols,
             Next.js core framing, and high-frequency shader pipelines.
           </p>
 
@@ -93,11 +97,11 @@ export default function HomePage() {
           </h2>
           <p className="text-label text-blue-400 mb-8 lowercase tracking-[0.5em]">Establish Uplink</p>
           <a
-            href="mailto:lab@antigravity.dev"
+            href="mailto:dev.cobraaa@gmail.com"
             style={{ fontFamily: 'var(--font-base)' }}
             className="text-2xl md:text-5xl font-light text-white hover:text-blue-400 transition-all duration-500 tracking-tight"
           >
-            lab@antigravity.dev
+            dev.cobraaa@gmail.com
           </a>
         </div>
       </section>

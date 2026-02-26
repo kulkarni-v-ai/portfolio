@@ -8,6 +8,17 @@ import { useStore } from '@/store/useStore';
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
     const setScrollProgress = useStore((state) => state.setScrollProgress);
+    const gestureActive = useStore((state) => state.gestureActive);
+
+    // Hide system cursor when gesture mode is on
+    useEffect(() => {
+        if (gestureActive) {
+            document.body.style.cursor = 'none';
+        } else {
+            document.body.style.cursor = '';
+        }
+        return () => { document.body.style.cursor = ''; };
+    }, [gestureActive]);
 
     useEffect(() => {
         // Register ScrollTrigger primarily if we use GSAP animations keyed to it
@@ -53,3 +64,4 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     return <>{children}</>;
 }
+

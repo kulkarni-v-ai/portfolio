@@ -69,12 +69,13 @@ void main() {
   vUv = uv;
   vNormal = normalize(normalMatrix * normal);
   
-  // Calculate noise based on time and pulse speed
+  // Solar flare like distortion using simplex noise
   float noise = snoise(position * 1.5 + uTime * uPulseSpeed);
   vNoise = noise;
   
-  // Displace vertex along its normal
-  vec3 newPosition = position + normal * noise * uDistortion;
+  // Scroll-linked scale and intensity
+  float displacement = noise * uDistortion;
+  vec3 newPosition = position + normal * displacement;
   
   gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
 }
@@ -83,41 +84,39 @@ void main() {
 const fragmentShader = `
 uniform float uScroll;
 uniform float uGlow;
+uniform float uTime;
 
 varying vec2 vUv;
 varying float vNoise;
 varying vec3 vNormal;
 
 void main() {
-  // Color progression based on uScroll:
-  // 0.0 - Electric blue (0.0, 0.5, 1.0)
-  // 0.25 - Blue + Cyan (0.0, 0.8, 1.0)
-  // 0.5 - Yellow veins (1.0, 0.8, 0.0)
-  // 0.75 - Orange glow (1.0, 0.4, 0.0)
-  // 1.0 - Subtle red accents (1.0, 0.1, 0.1)
-  
-  vec3 c0 = vec3(0.0, 0.5, 1.0); // Electric blue
-  vec3 c1 = vec3(0.0, 0.8, 1.0); // Cyan
-  vec3 c2 = vec3(1.0, 0.8, 0.0); // Yellow
-  vec3 c3 = vec3(1.0, 0.4, 0.0); // Orange
-  vec3 c4 = vec3(1.0, 0.1, 0.1); // Red
+  // Sun-themed color palette:
+  // Starts electric blue/cyan, transforms into gold/orange/red solar flare
+  vec3 c_blue = vec3(0.0, 0.5, 1.0);  // Deep Electric Blue
+  vec3 c_cyan = vec3(0.0, 1.0, 1.0);  // Bright Cyan
+  vec3 c_gold = vec3(1.0, 0.8, 0.1);  // Radiant Gold
+  vec3 c_orange = vec3(1.0, 0.4, 0.0); // Solar Orange
+  vec3 c_fire = vec3(1.0, 0.1, 0.0);   // Sun Fire Red
 
-  // Smoothly interpolate between colors based on scroll
-  vec3 color = c0;
-  color = mix(color, c1, smoothstep(0.0, 0.25, uScroll));
-  color = mix(color, c2, smoothstep(0.25, 0.5, uScroll));
-  color = mix(color, c3, smoothstep(0.5, 0.75, uScroll));
-  color = mix(color, c4, smoothstep(0.75, 1.0, uScroll));
+  // Transition based on scroll
+  vec3 baseColor = c_blue;
+  baseColor = mix(baseColor, c_cyan, smoothstep(0.0, 0.2, uScroll));
+  baseColor = mix(baseColor, c_gold, smoothstep(0.2, 0.5, uScroll));
+  baseColor = mix(baseColor, c_orange, smoothstep(0.5, 0.8, uScroll));
+  baseColor = mix(baseColor, c_fire, smoothstep(0.8, 1.0, uScroll));
   
-  // Add noise variation
-  vec3 finalColor = mix(color * 0.5, color * 1.5, vNoise * 0.5 + 0.5);
-  
-  // Fresnel glow effect
+  // Apply plasma-like variability using noise and time
+  float plasma = sin(vNoise * 10.0 + uTime) * 0.5 + 0.5;
+  vec3 finalColor = mix(baseColor * 0.3, baseColor * 1.8, vNoise * 0.5 + 0.5);
+  finalColor = mix(finalColor, vec3(1.0, 1.0, 0.9), plasma * 0.2 * uScroll); // Highlight flares as we scroll
+
+  // Fresnel rim glow
   float fresnel = dot(vNormal, vec3(0.0, 0.0, 1.0));
   fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
-  fresnel = pow(fresnel, 3.0);
+  fresnel = pow(fresnel, 2.5);
   
-  finalColor += color * fresnel * uGlow;
+  finalColor += baseColor * fresnel * uGlow;
 
   gl_FragColor = vec4(finalColor, 1.0);
 }
@@ -128,14 +127,12 @@ export default function AICore() {
     const materialRef = useRef<THREE.ShaderMaterial>(null);
     const setCoreRef = useStore(state => state.setCoreRef);
 
-    // Register this mesh as the "Core" in the global store for occlusion
     useEffect(() => {
         if (meshRef.current) {
             setCoreRef(meshRef.current);
         }
     }, [setCoreRef]);
 
-    // Setup Shader Uniforms once
     const uniforms = useMemo(
         () => ({
             uTime: { value: 0 },
@@ -147,53 +144,49 @@ export default function AICore() {
         []
     );
 
-    // Animation Loop (60fps)
     useFrame((state, delta) => {
-        // Read directly from the Zustand store outside of React's reactive cycle
-        // to maintain high performance.
         const { scrollProgress, cursorPosition } = useStore.getState();
 
-        // 1. Update Shader Uniforms
         if (materialRef.current) {
             materialRef.current.uniforms.uTime.value += delta;
-
-            // Map scroll progress to shader parameters
-            // e.g., distortion and pulse speed increase as you scroll down
-            const targetScroll = scrollProgress;
-            // Interpolate the scroll value linearly to make the transition smooth
             materialRef.current.uniforms.uScroll.value = THREE.MathUtils.lerp(
                 materialRef.current.uniforms.uScroll.value,
-                targetScroll,
+                scrollProgress,
                 0.05
             );
 
-            materialRef.current.uniforms.uDistortion.value = 0.2 + targetScroll * 0.5;
-            materialRef.current.uniforms.uPulseSpeed.value = 0.5 + targetScroll * 1.5;
-            materialRef.current.uniforms.uGlow.value = 1.0 + targetScroll * 2.0;
+            // Dynamically increase activity as we "ignite" on scroll
+            materialRef.current.uniforms.uDistortion.value = 0.22 + scrollProgress * 0.45;
+            materialRef.current.uniforms.uPulseSpeed.value = 0.4 + scrollProgress * 1.6;
+            materialRef.current.uniforms.uGlow.value = 1.0 + scrollProgress * 1.5;
         }
 
-        // 2. Handle Cursor Interaction & Floating Motion
         if (meshRef.current) {
-            // Add a subtle vertical "breathing" float
-            const floatY = Math.sin(state.clock.getElapsedTime() * 0.5) * 0.2;
+            const aspect = state.size.width / state.size.height;
+            const isMobile = aspect < 1;
+
+            // 1. Side-by-Side Placement logic:
+            // At the start (scroll 0), it's at [0, 0, 0]
+            // At the end (scroll 1), it moves to the left (e.g., x: -4) 
+            const sideBySideProgress = THREE.MathUtils.smoothstep(scrollProgress, 0.4, 0.9);
+            const targetX = THREE.MathUtils.lerp(0, -4.5, sideBySideProgress);
+
+            meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.05);
+
+            // Responsive Scaling
+            const responsiveScale = isMobile ? 0.55 : 0.85;
+            meshRef.current.scale.setScalar(THREE.MathUtils.lerp(meshRef.current.scale.x, responsiveScale, 0.1));
+
+            // Floating breathe
+            const floatY = Math.sin(state.clock.getElapsedTime() * 0.4) * 0.15;
             meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, floatY, 0.05);
 
-            // Rotate the orb slightly based on mouse position
-            const targetRotationX = cursorPosition.y * 0.5;
-            const targetRotationY = cursorPosition.x * 0.5;
+            // Rotate based on mouse
+            const targetRotationX = cursorPosition.y * 0.4;
+            const targetRotationY = cursorPosition.x * 0.4;
 
-            meshRef.current.rotation.x = THREE.MathUtils.damp(
-                meshRef.current.rotation.x,
-                targetRotationX,
-                4, // lambda
-                delta
-            );
-            meshRef.current.rotation.y = THREE.MathUtils.damp(
-                meshRef.current.rotation.y,
-                targetRotationY,
-                4, // lambda
-                delta
-            );
+            meshRef.current.rotation.x = THREE.MathUtils.damp(meshRef.current.rotation.x, targetRotationX, 4, delta);
+            meshRef.current.rotation.y = THREE.MathUtils.damp(meshRef.current.rotation.y, targetRotationY, 4, delta);
         }
     });
 
@@ -201,19 +194,17 @@ export default function AICore() {
         <mesh
             ref={meshRef}
             position={[0, 0, 0]}
-            renderOrder={999} // Max priority
+            renderOrder={10}
         >
-            {/* Reduced size for better scene composition */}
             <sphereGeometry args={[1.2, 128, 128]} />
             <shaderMaterial
                 ref={materialRef}
                 vertexShader={vertexShader}
                 fragmentShader={fragmentShader}
                 uniforms={uniforms}
-                wireframe={false}
                 transparent={true}
-                depthTest={false}  // Always draw over other 3D objects
-                depthWrite={true}  // Still write to depth for HTML occlusion (drei)
+                depthTest={true}
+                depthWrite={true}
             />
         </mesh>
     );

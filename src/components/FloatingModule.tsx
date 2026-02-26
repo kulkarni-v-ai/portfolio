@@ -106,12 +106,9 @@ export default function FloatingModule({
                     distanceFactor={10}
                     position={[0, 0, 0]}
                     occlude="blending"
-                    onOcclude={(visible) => {
-                        // Optional: trigger some opacity logic here if needed
-                    }}
                     className="pointer-events-auto"
                 >
-                    <div className="w-52 p-3 rounded-lg border border-white/10 bg-black/40 backdrop-blur-xl shadow-[0_0_30px_rgba(0,180,255,0.05)] transition-all duration-500 hover:border-blue-500/40 hover:bg-blue-900/10 hover:shadow-[0_0_40px_rgba(0,150,255,0.2)] text-white cursor-pointer select-none">
+                    <div className="relative group transition-all duration-500">
                         {ui}
                     </div>
                 </Html>
